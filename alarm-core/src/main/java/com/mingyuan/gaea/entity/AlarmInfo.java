@@ -3,6 +3,8 @@ package com.mingyuan.gaea.entity;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
+import java.util.List;
+
 /**
  * 报警主体
  *
@@ -16,5 +18,5 @@ public class AlarmInfo {
 
     private String message;
 
-    private String timestamp;
+    private List<String> phones;
 }

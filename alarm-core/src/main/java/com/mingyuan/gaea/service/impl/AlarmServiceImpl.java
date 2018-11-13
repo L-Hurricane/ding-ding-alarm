@@ -1,8 +1,9 @@
 package com.mingyuan.gaea.service.impl;
 
 import com.mingyuan.gaea.entity.AlarmInfo;
-import com.mingyuan.gaea.feign.DingDingRobotFeign;
-import com.mingyuan.gaea.feign.param.AlarmDingDingParam;
+import com.mingyuan.gaea.feign.client.param.AlarmDingDingParamFactory;
+import com.mingyuan.gaea.feign.dto.MessageSender;
+import com.mingyuan.gaea.feign.mgr.DingDingRobotFeignMgr;
 import com.mingyuan.gaea.redis.mgr.AlarmInfoMgr;
 import com.mingyuan.gaea.service.AlarmService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +11,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.groupingBy;
 
@@ -22,12 +22,12 @@ public class AlarmServiceImpl implements AlarmService {
 
     private final AlarmInfoMgr alarmInfoMgr;
 
-    private DingDingRobotFeign dingDingRobotFeign;
+    private final DingDingRobotFeignMgr dingDingRobotFeignMgr;
 
     @Autowired
-    public AlarmServiceImpl(AlarmInfoMgr alarmInfoMgr, DingDingRobotFeign dingDingRobotFeign) {
+    public AlarmServiceImpl(AlarmInfoMgr alarmInfoMgr, DingDingRobotFeignMgr dingDingRobotFeignMgr) {
         this.alarmInfoMgr = alarmInfoMgr;
-        this.dingDingRobotFeign = dingDingRobotFeign;
+        this.dingDingRobotFeignMgr = dingDingRobotFeignMgr;
     }
 
     @Override
@@ -38,11 +38,10 @@ public class AlarmServiceImpl implements AlarmService {
     @Override
     public void alarm(List<AlarmInfo> alarmInfo) {
         Map<String, List<AlarmInfo>> alarmMap = alarmInfo.stream().collect(groupingBy(AlarmInfo::getToken));
-        alarmMap.forEach(
-            (token, alarmInfoGroup) ->
-                dingDingRobotFeign.dingDingAlarm(token,
-                    new AlarmDingDingParam().setText("{\"content\": \"" + alarmInfoGroup.stream().map(AlarmInfo::getMessage).collect(Collectors.joining("\\n")) + "\"}"))
-        );
+        alarmMap.forEach((token, alarmInfoGroup) -> {
+            MessageSender messageSender = AlarmDingDingParamFactory.generateMessageSender(token, alarmInfoGroup);
+            dingDingRobotFeignMgr.sendMessage(messageSender);
+        });
     }
 
     @Override

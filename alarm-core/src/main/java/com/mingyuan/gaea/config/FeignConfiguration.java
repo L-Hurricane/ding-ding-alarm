@@ -1,6 +1,6 @@
 package com.mingyuan.gaea.config;
 
-import com.mingyuan.gaea.feign.DingDingRobotFeign;
+import com.mingyuan.gaea.feign.client.DingDingRobotFeign;
 import feign.Feign;
 import feign.jackson.JacksonDecoder;
 import feign.jackson.JacksonEncoder;

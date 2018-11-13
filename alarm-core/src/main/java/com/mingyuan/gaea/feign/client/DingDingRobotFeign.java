@@ -1,6 +1,6 @@
-package com.mingyuan.gaea.feign;
+package com.mingyuan.gaea.feign.client;
 
-import com.mingyuan.gaea.feign.param.AlarmDingDingParam;
+import com.mingyuan.gaea.feign.client.param.AlarmDingDingParam;
 import feign.Headers;
 import feign.Param;
 import feign.RequestLine;
@@ -11,10 +11,10 @@ import feign.RequestLine;
 public interface DingDingRobotFeign {
 
     /**
-     * 发送钉钉报警
+     * send ding ding alarm
      *
-     * @param accessToken 钉钉机器人Token
-     * @param message     报警消息体
+     * @param accessToken ding ding robot Token
+     * @param message     alarm message body
      */
     @RequestLine("POST /robot/send?access_token={access_token}")
     @Headers("Content-Type: application/json; charset=utf-8")

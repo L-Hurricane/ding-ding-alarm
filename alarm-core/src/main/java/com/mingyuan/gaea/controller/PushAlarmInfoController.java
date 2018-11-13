@@ -25,8 +25,8 @@ public class PushAlarmInfoController {
     @GetMapping("/push_alarm_info")
     public String pushAlarmInfo(@RequestParam String token,
                                 @RequestParam String message,
-                                @RequestParam String timestamp) {
-        alarmService.pushAlarmInfo(new AlarmInfo().setToken(token).setMessage(message).setTimestamp(timestamp));
+                                @RequestParam List<String> phones) {
+        alarmService.pushAlarmInfo(new AlarmInfo().setToken(token).setMessage(message).setPhones(phones));
         return "mingyuan_test";
     }
 
