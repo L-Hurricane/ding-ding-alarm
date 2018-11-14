@@ -36,14 +36,16 @@ public class AlarmDingDingParamFactory {
         At at = new At().setAtMobiles(phones).setAtAll(false);
 
         String alarmMessage = alarmInfo.stream()
-            .map(alarm -> {
-                String message = alarm.getMessage();
-                String ding = alarm.getPhones().stream().map(phone -> "@" + phone + " ").collect(joining());
-                return message + " " + ding;
-            })
+            .map(AlarmDingDingParamFactory::generateDingDingContent)
             .collect(joining("\\n"));
         return new AlarmDingDingParam()
             .setAt(at)
             .setText("{\"content\": \"" + alarmMessage + "\"}");
+    }
+
+    private static String generateDingDingContent(AlarmInfo alarmInfo) {
+        String message = alarmInfo.getMessage();
+        String ding = alarmInfo.getPhones().stream().map(phone -> "@" + phone + " ").collect(joining());
+        return message + " " + ding;
     }
 }
