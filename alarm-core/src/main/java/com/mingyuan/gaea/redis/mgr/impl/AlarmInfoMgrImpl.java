@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import static java.util.stream.Collectors.toList;
 
@@ -32,7 +33,8 @@ public class AlarmInfoMgrImpl implements AlarmInfoMgr {
     public List<AlarmInfo> getAllAlarmInfo() {
         BoundListOperations<String, String> boundListOperations = redisTemplate.boundListOps("alarm");
         List<AlarmInfo> alarmInfoGroup = new ArrayList<>();
-        while (true) {
+        int size = boundListOperations.size() == null ? 0 : Objects.requireNonNull(boundListOperations.size()).intValue();
+        for (int i = 0; i < size; i++) {
             Object object = boundListOperations.leftPop();
             if (object == null) {
                 break;
